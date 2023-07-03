@@ -1,11 +1,6 @@
-const { isAbsolute, relativeToAbsolute, isValidPath, isFile, findFileInDirectory, getFilesInDirectory } = require('./functions');
+const { isAbsolute, relativeToAbsolute, isValidPath, isFile, getFilesInDirectory, readMDFile, getLinks } = require('./functions');
 
 const filePath = process.argv[2];
-
-// reemplazar "\"" por "/" (CONSTRUIR)
- function removeSpaces(path) {
-  return path.replace(/\s/g, ''); // expresión regular que modifica la ruta para que no contenga espacios.
-}
 
 function mdLinks(path, options) {
   return new Promise((resolve, reject) => {
@@ -15,8 +10,7 @@ function mdLinks(path, options) {
     if (validate) {
       absolutePath = path;
     } else {
-      const filePathWithoutSpaces = removeSpaces(filePath);
-      absolutePath = relativeToAbsolute(filePathWithoutSpaces); // Convierte ruta relativa en absoluta
+            absolutePath = relativeToAbsolute(path); // Convierte ruta relativa en absoluta
     }
 
     isValidPath(absolutePath)
@@ -34,7 +28,7 @@ function mdLinks(path, options) {
           console.log("es directorio")
           getFilesInDirectory(absolutePath)
           .then((filePaths) => {
-            console.log("Archivos disponibles:");
+            console.log("Estos son los archivos MD disponibles:");
             console.log(filePaths);
           })
           .catch((error) => {
@@ -45,6 +39,27 @@ function mdLinks(path, options) {
       .catch((error) => {
         console.error('Error: No es archivo');
       });
+
+      readMDFile(absolutePath)
+      .then((content) => {
+    const links = getLinks(content);
+    const fetchPromise = links.map((link) => fetch(link));
+
+    Promise.all(fetchPromise)
+      .then((answers) => {
+        console.log('Respuestas de los enlaces:');
+        answers.forEach((answer, index) => {
+          console.log(`${links[index]} - ${answer.status} ${answer.statusText}`);
+        });
+      })
+      .catch((err) => {
+        console.error('Error al hacer las solicitudes fetch:', err);
+      });
+  })
+  .catch((err) => {
+    console.error('Error al leer el archivo:', err);
+  });
+      
   });
 }
 
