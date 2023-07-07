@@ -1,6 +1,10 @@
 const path = require("path");
 const fs = require('fs');
 
+function changeSlash(path) {
+    return path.replace(/\\/g, '/'); // expresión regular que modifica la ruta para que no contenga espacios.
+}
+
 function isAbsolute(route) {
     return path.isAbsolute(route)
 }
@@ -89,4 +93,5 @@ module.exports = {
     getFilesInDirectory,
     readMDFile,
     getLinks,
+    changeSlash,
 }
