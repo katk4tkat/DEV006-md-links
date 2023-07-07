@@ -78,11 +78,8 @@ function getLinks(content) {
             links.push(link);
         }
     }
-
     return links;
 }
-
-
 
 module.exports = {
     isAbsolute,

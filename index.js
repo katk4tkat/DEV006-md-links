@@ -1,6 +1,15 @@
+const c = require('ansi-colors');
+
 const { isAbsolute, relativeToAbsolute, isValidPath, isFile, getFilesInDirectory, readMDFile, getLinks } = require('./functions');
 
 const filePath = process.argv[2];
+
+function changeSlash(path) {
+  return path.replace(/\\/g, '/'); // expresión regular que modifica la ruta para que no contenga espacios.
+}
+
+console.log(c.bold.green("Hola! Bienvenidx"))
+console.log(c.yellow("Por favor, ingresa una ruta después de 'node index.js' para comprobar el estado de los links. \n Recuerda que, para evitar errores, la ruta debe ir entre comillas."))
 
 function mdLinks(path, options) {
   return new Promise((resolve, reject) => {
@@ -8,9 +17,11 @@ function mdLinks(path, options) {
     const validate = isAbsolute(path); // Valida si la ruta es absoluta
 
     if (validate) {
-      absolutePath = path;
+      const filePathSlash = changeSlash(filePath);
+      console.log("la ruta corregida es:", filePathSlash)
+      absolutePath = filePathSlash;
     } else {
-            absolutePath = relativeToAbsolute(path); // Convierte ruta relativa en absoluta
+      absolutePath = relativeToAbsolute(path); // Convierte ruta relativa en absoluta
     }
 
     isValidPath(absolutePath)
@@ -23,9 +34,30 @@ function mdLinks(path, options) {
 
     isFile(absolutePath)
       .then((isFile) => {
-        if (isFile) {console.log("es archivo")}
+        if (isFile) {console.log("Es archivo")
+        readMDFile(absolutePath)
+        .then((content) => {
+      const links = getLinks(content);
+      const fetchPromise = links.map((link) => fetch(link));
+  
+      Promise.all(fetchPromise)
+        .then((answers) => {
+          console.log('Respuestas de los enlaces:');
+          return answers.forEach((answer, index) => (
+            console.log({
+              link: links[index], status: answer.status, text: answer.statusText
+            })
+        ));
+        })
+        .catch((err) => {
+          console.error('Error al hacer las solicitudes fetch:', err);
+        });
+    })
+    .catch((err) => {
+      console.error('Error al leer el archivo:', err);
+    });}
         else {
-          console.log("es directorio")
+          console.log("Es directorio")
           getFilesInDirectory(absolutePath)
           .then((filePaths) => {
             console.log("Estos son los archivos MD disponibles:");
@@ -39,26 +71,6 @@ function mdLinks(path, options) {
       .catch((error) => {
         console.error('Error: No es archivo');
       });
-
-      readMDFile(absolutePath)
-      .then((content) => {
-    const links = getLinks(content);
-    const fetchPromise = links.map((link) => fetch(link));
-
-    Promise.all(fetchPromise)
-      .then((answers) => {
-        console.log('Respuestas de los enlaces:');
-        answers.forEach((answer, index) => {
-          console.log(`${links[index]} - ${answer.status} ${answer.statusText}`);
-        });
-      })
-      .catch((err) => {
-        console.error('Error al hacer las solicitudes fetch:', err);
-      });
-  })
-  .catch((err) => {
-    console.error('Error al leer el archivo:', err);
-  });
       
   });
 }
@@ -66,3 +78,8 @@ function mdLinks(path, options) {
 mdLinks(filePath)
   .then((res) => console.log(res))
   .catch((err) => console.log(err));
+
+module.exports = {
+  mdLinks,
+  changeSlash,
+}
