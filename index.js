@@ -1,14 +1,14 @@
 const c = require('ansi-colors');
 const axios = require('axios');
 
-const { changeSlash, isAbsolute, relativeToAbsolute, isValidPath, isFile, getFilesInDirectory, readMDFile, getLinks } = require('./functions');
+const { changeSlash, isAbsolute, relativeToAbsolute, isValidPath, isFile, getFilesInDirectory, readMDFile, getLinks, validateLink } = require('./functions');
 
 const filePath = process.argv[2];
 
 console.log(c.bold.green("Hola! Bienvenidx"))
 console.log(c.yellow("Por favor, ingresa una ruta después de 'node index.js' para comprobar el estado de los links. \n Recuerda que, para evitar errores, la ruta debe ir entre comillas."))
 
-function mdLinks(path, options) {
+function mdLinks(path) {
   return new Promise((resolve, reject) => {
     let absolutePath;
     const validate = isAbsolute(path); // Valida si la ruta es absoluta
@@ -48,7 +48,7 @@ function mdLinks(path, options) {
                   )));
                 })
                 .catch((err) => {
-                  reject('Error al hacer las solicitudes fetch:', err);
+                  reject('Error al hacer las solicitudes');
                 });
             })
             .catch((err) => {
@@ -73,15 +73,15 @@ function mdLinks(path, options) {
   });
 }
 
-/* const result = mdLinks(filePath);
-console.log(result, "este es el resultado")
+
+const result = mdLinks(filePath);
   result.then((res) => {
-    console.log("primer then", res)
+    console.log(res)
     return res;
   })
   .catch((err) => {
     console.error(err);
-  });*/
+  });
 
 module.exports = {
   mdLinks,

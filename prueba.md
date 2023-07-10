@@ -1,8 +1,5 @@
-Súmate al canal de Slack
-[#project-md-links](https://claseslaboratoria.slack.com/archives/C03T1E5TJCQ)
-para conversar y pedir ayuda del proyecto.
+Dentro de una comunidad de código abierto, nos han propuesto crear una
+herramienta usando [Node.js](https://nodejs.org/), que lea y analice archivos
+en formato `Markdown`, para verificar los links que contengan y reportar
+algunas estadísticas.
 
-
-desde GitHub. Ver [docs oficiales de `npm install` acá](https://docs.npmjs.com/cli/install).
-
-Por ejemplo, el [`course-parser`](https://github.com/Laboratoria/course-parser)

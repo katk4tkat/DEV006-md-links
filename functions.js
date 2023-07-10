@@ -85,6 +85,16 @@ function getLinks(content) {
     return links;
 }
 
+function validateLink(href) {
+    return axios.get(href).then((response) => {
+        return {
+            status: response.status,
+            statusText: response.statusText,
+            text: response.text(),
+        };
+    });
+}
+
 module.exports = {
     isAbsolute,
     relativeToAbsolute,
@@ -94,4 +104,5 @@ module.exports = {
     readMDFile,
     getLinks,
     changeSlash,
+    validateLink,
 }
