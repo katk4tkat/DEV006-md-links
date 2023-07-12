@@ -22,15 +22,15 @@ Generar una herramienta que permita al usuario validar si los links contenidos e
 
 Para poder diseñar esta herramienta, fue necesario implementar un [diagrama de flujo](https://miro.com/app/board/uXjVM7AfxS0=/?share_link_id=624662679560).
 
-###Hitos importantes 
+### Hitos importantes 
 
-####Convertir una ruta relativa en absoluta. 
+#### Convertir una ruta relativa en absoluta. 
 Debe ser capaz de reconocer si una ruta es absoluta  o relativa, en caso de que sea relativa debe pasarla a ruta absoluta. 
 
-####Validar si la ruta es correcta. 
+#### Validar si la ruta es correcta. 
 Una vez obtenida la ruta, es importante revisar si esta es correcta. Es importante que se realice primero el paso anterior, ya que sino podría dar un falso error en la validación. 
 	
-####Ver si se trata de un archivo o directorio.
+#### Ver si se trata de un archivo o directorio.
 Esto nos permitirá dar una respuesta al usuario, para que si ingresa un directorio dar una lista de archivos MD disponibles, en caso de que no haya entregar esa información. 
 #### Si es un archivo, validar que sea de extensión MD.
 Una vez seleccionado el archivo, validar que sea de extensión MD para poder leerlo. 
